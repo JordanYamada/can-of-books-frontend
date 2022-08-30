@@ -1,11 +1,11 @@
 import { Component } from "react";
 
-class Profile extends Component {
+class About extends Component {
 
   render() {
     /* TODO: render information about the developers */
-    return <p>Profile page coming soon</p>
+    return <div><p>This app is brought to you by Jordan Yamada, Amy Pierce & Rhea Carillo</p></div>
   }
 };
 
-export default Profile;
+export default About;
