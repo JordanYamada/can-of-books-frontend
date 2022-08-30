@@ -3,33 +3,40 @@ import Header from './Header';
 import Footer from './Footer';
 import BestBooks from './BestBooks';
 import Profile from './About.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
 import {
   BrowserRouter as Router,
   Routes,
   Route
 } from "react-router-dom";
 
+
 class App extends React.Component {
+ 
+
   render() {
     return (
       <>
+
         <Router>
           <Header />
+          
+          
           <Routes>
-            <Route 
+            <Route
               exact path="/"
               element={<BestBooks />}
             >
             </Route>
-            <Route 
+            <Route
               path="/about"
-              element={<Profile/>}
+              element={<Profile />}
             >
-              </Route>
+            </Route>
           </Routes>
           <Footer />
         </Router>
+
       </>
     )
   }
