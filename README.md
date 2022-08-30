@@ -16,9 +16,8 @@ Clone the starter template from
 HTML, CSS, Javascript, React.js, Axios
 
 ## Change Log
-<!-- Use this area to document the iterative changes made to your application as each feature is successfully implemented. Use time stamps. Here's an example:
 
-01-01-2001 4:59pm - Application now has a fully-functional express server, with a GET route for the location resource. -->
+08/29/22 5:45PM Application is a fully functioning frontend connected to a server and is rendering a webpage with the expected data.
 
 ## Estimates
 
@@ -30,9 +29,21 @@ Estimate of time needed to complete: 3 hours
 
 Start time: 2pm
 
-Finish time: _____
+Finish time: 5:45 pm
 
-Actual time needed to complete: _____
+Actual time needed to complete: 5 hours
+
+### Lab12
+
+Name of feature: Set up
+
+Estimate of time needed to complete: 5 hours
+
+Start time: 2:00 pm
+
+Finish time: 
+
+Actual time needed to complete: 
 
 ## Credit and Collaborations
 
