@@ -17,11 +17,9 @@ class App extends React.Component {
   render() {
     return (
       <>
-
+        {/* Routes in Navbar for our BooksCarousel and About page */}
         <Router>
           <Header />
-          
-          
           <Routes>
             <Route
               exact path="/"
