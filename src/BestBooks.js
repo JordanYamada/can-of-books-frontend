@@ -123,7 +123,9 @@ class BestBooks extends React.Component {
           </Button>
         </Carousel.Item>
     )});
-    console.log(booksCarouselItems);
+
+    // log to see what's inside the booksCarouselItems array
+    // console.log(booksCarouselItems);
     return (
       <>
         <Button 
