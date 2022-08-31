@@ -63,6 +63,23 @@ class BestBooks extends React.Component {
     }
   }
 
+  deleteBook = async (id) => {
+    try
+    {
+      let url = `${SERVER}/books/${id}`;
+      await axios.delete(url);
+
+      let updatedBooks = this.state.books.filter( book => book._id !== id);
+
+      this.setState({
+        books: updatedBooks,
+      });
+    }
+    catch(e)
+    {
+      console.log('could not delete this book: ', e.response.data);
+    }
+  }
 
   componentDidMount() {
     this.getBooks();
@@ -90,6 +107,12 @@ class BestBooks extends React.Component {
           <p>{book.description}.</p>
           <p>{book.status}</p>
         </Carousel.Caption>
+        <Button 
+          variant="dark" 
+          onClick={() => this.deleteBook(book._id)}
+        >
+          Delete Book
+        </Button>
       </Carousel.Item>
 
     });
