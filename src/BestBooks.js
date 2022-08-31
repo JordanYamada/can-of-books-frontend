@@ -94,45 +94,56 @@ class BestBooks extends React.Component {
 
   render() {
 
-    let books = this.state.books.map(book => {
+    let booksCarouselItems = this.state.books.map(book => {
       // console.log('books in state in render:', this.state.books);
       // return <p key={book._id}>{book.title}</p>
 
-      return <Carousel.Item key={book._id}>
+      // render a <Carosel.Item> for each book in the books array
+      return <Carousel.Item key={booksCarouselItems._id}>
         <img
           className="d-block w-100 img-fluid"
           src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
           alt="book"
         />
         <Carousel.Caption>
-          <h3>{book.title}</h3>
-          <p>{book.description}.</p>
-          <p>{book.status}</p>
+          <h3>{booksCarouselItems.title}</h3>
+          <p>{booksCarouselItems.description}.</p>
+          <p>{booksCarouselItems.status}</p>
         </Carousel.Caption>
         <Button 
           variant="dark" 
-          onClick={() => this.deleteBook(book._id)}
+          onClick={() => this.deleteBook(booksCarouselItems._id)}
         >
           Delete Book
         </Button>
       </Carousel.Item>
 
     });
-    console.log(books);
+    console.log(booksCarouselItems);
     return (
       <>
-      <Button variant="dark" onClick={this.handleModal}>Add Books</Button>
+        <Button 
+          variant="dark" 
+          onClick={this.handleModal}
+        >
+          Add Books
+        </Button>
 
-      <BookFormModal
-            show={this.state.showModal}
-            onHide={this.handleModal}
-            handleSubmit={this.handleSubmit}
-          />
+        <BookFormModal
+          show={this.state.showModal}
+          onHide={this.handleModal}
+          handleSubmit={this.handleSubmit}
+        />
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
 
-        {this.state.books.length ? (
-          <Carousel>{books}</Carousel>
-        ) : (
+        {/* ternary to display either a <Carousel> (if there are books) or an error message */}
+        {this.state.books.length 
+        ? 
+        (
+          <Carousel>{booksCarouselItems}</Carousel>
+        ) 
+        :
+        (
           <h3>No Books Found :(</h3>
         )}
       </>
