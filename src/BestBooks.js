@@ -14,7 +14,7 @@ class BestBooks extends React.Component {
     }
   }
 
-  /* TODO: Make a GET request to your API to fetch all the books from the database  */
+  
   getBooks = async () => {
     try {
       // Get book data from backend      
@@ -30,13 +30,14 @@ class BestBooks extends React.Component {
   }
 
   
-  // This eventlistener toggles the state to open and close the modal 
+  // This eventlistener toggles `showModal` in state to open and close the modal form
   handleModal = () => {
     this.setState({
       showModal: !this.state.showModal,
     })
   }
 
+  // handler to make a book object from user input
   handleSubmit = (e) => {
     e.preventDefault();
     let book = {
@@ -47,30 +48,34 @@ class BestBooks extends React.Component {
     this.postBook(book);
   }
 
-
+  // handler to create a book in the books database from user input
+  // then update state with the updated books array
   postBook = async (book) => {
     try{
-      console.log('This was posted');
       let url =  `${SERVER}/books`;
       console.log(url);
       let createdBook = await axios.post(url,book);
-      console.log('Posted Book',createdBook.data);
+      console.log('Posted Book: ',createdBook.data);
+      // use spread operator to make a deep copy of books in state, and concatenate the createdBook to the end
       this.setState({
         books: [...this.state.books, createdBook.data],
       });
     } catch (e){
-      console.log('This is a problem...',e.response)
+      console.log('This is a problem... ',e.response)
     }
   }
 
+  // method to delete a book from the database using its '_id' property
   deleteBook = async (id) => {
     try
     {
       let url = `${SERVER}/books/${id}`;
       await axios.delete(url);
 
+      // use `filter` to make an `updatedBooks` array sans the book we just deleted
       let updatedBooks = this.state.books.filter( book => book._id !== id);
 
+      // set the updatedBooks array to state
       this.setState({
         books: updatedBooks,
       });
@@ -89,9 +94,6 @@ class BestBooks extends React.Component {
 
   render() {
 
-
-
-    /* TODO: render all the books in a Carousel */
     let books = this.state.books.map(book => {
       // console.log('books in state in render:', this.state.books);
       // return <p key={book._id}>{book.title}</p>
