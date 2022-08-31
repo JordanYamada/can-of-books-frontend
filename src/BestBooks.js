@@ -46,6 +46,7 @@ class BestBooks extends React.Component {
       status: e.target.status.value,
     }
     this.postBook(book);
+    this.handleModal();
   }
 
   // handler to create a book in the books database from user input
@@ -73,10 +74,10 @@ class BestBooks extends React.Component {
     {
       let url = `${SERVER}/books/${id}`;
       await axios.delete(url);
-
+      console.log(url);
       // use `filter` to make an `updatedBooks` array sans the book we just deleted
       let updatedBooks = this.state.books.filter( book => book._id !== id);
-
+      console.log(updatedBooks);
       // set the updatedBooks array to state
       this.setState({
         books: updatedBooks,
@@ -87,6 +88,64 @@ class BestBooks extends React.Component {
       console.log('could not delete this book: ', e.response.data);
     }
   }
+
+  /* class 13 notes: Update
+
+    updateBook = updatedBook =>
+    {
+      try
+      {
+        // make url using the `_id` property of the `updatedBook` argument
+        let url = `${SERVER}/books/${updatedBook._id}`;
+
+        // get the updatedBook from the database
+        let updatedBookFromDB = await axios.put(url, updatedBook);
+
+        // update state, so that it can rerender with updated books info
+
+        let let updatedBookArray = this.state.books.map( existingBook => 
+        {
+          // if the `._id` matches the book we want to update:
+          // replace that element with the updatedBookFromDB book object
+
+          return existingBook._id === updatedBook._id
+          ? updatedBookFromDB.data
+          : existingBook;
+        });
+
+        this.setState({
+          books: updatedBookArray updatedBookArray,
+        })
+      }
+      catch(e)
+      {
+        console.log('Problem updating book...: ', e.message);
+      }
+    }
+
+    handleUpdateSubmit = e =>
+    {
+      e.preventDefault();
+
+      let bookToUpdate = 
+      {
+        title: e.target.title.value || this.props.book.title,
+        description: e.target.description.value || this.props.book.description,
+        status: e.target.status.value || this.props.book.status,
+
+        // pass in _id and __v of book
+        _id: this.props.book._id,
+
+        // two underscores
+        __v: this.props.book.__v
+      }
+
+      // log to see the book we are to update
+      console.log('bookToUpdate: ', bookToUpdate);
+    }
+
+    // call `updateBook()` to do backend stuff
+  */
 
   // only runs these methods after the component mounts
   componentDidMount() {
@@ -99,7 +158,7 @@ class BestBooks extends React.Component {
       // console.log('books in state in render:', this.state.books);
       // return <p key={book._id}>{book.title}</p>
 
-      // render a <Carosel.Item> for each book in the books array
+      // render a <Carousel.Item> for each book in the books array
       return (
         <Carousel.Item key={book._id}>
           <img
@@ -108,19 +167,23 @@ class BestBooks extends React.Component {
             alt={book.description}
           />
 
-          <Carousel.Caption>
+          <Carousel.Caption >
             <h3>{book.title}</h3>
             <p>{book.description}</p>
             <p>{book.status}</p>
-          </Carousel.Caption>
-
-          {/* delete button */}
-          <Button 
+            
+             {/* delete button */}
+            <Button 
             variant="dark" 
             onClick={() => this.deleteBook(book._id)}
+           //</Carousel.Item> }}
           >
             Delete Book
           </Button>
+          </Carousel.Caption>
+
+         
+         
         </Carousel.Item>
     )});
 
