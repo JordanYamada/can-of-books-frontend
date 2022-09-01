@@ -1,9 +1,12 @@
 import axios from 'axios';
 import React from 'react';
 import BookFormModal from './BookFormModal';
+import BookUpdateFormModal from './BookUpdateFormModal';
 import Button from 'react-bootstrap/Button';
 import Carousel from 'react-bootstrap/Carousel';
 let SERVER = process.env.REACT_APP_SERVER;
+
+
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -11,10 +14,12 @@ class BestBooks extends React.Component {
     this.state = {
       books: [],
       showModal: false,
+      showUpdateModal: false,
+      book: {}
     }
   }
 
-  
+
   getBooks = async () => {
     try {
       // Get book data from backend      
@@ -29,11 +34,24 @@ class BestBooks extends React.Component {
     }
   }
 
-  
+
   // This eventlistener toggles `showModal` in state to open and close the modal form
   handleModal = () => {
     this.setState({
       showModal: !this.state.showModal,
+    })
+  }
+
+  handleUpdateModal = (book) => {
+    this.setState({
+      showUpdateModal:true,
+      book: book
+    })
+  }
+  
+  hideUpdateForm = () => {
+    this.setState({
+      showUpdateModal: false
     })
   }
 
@@ -52,39 +70,37 @@ class BestBooks extends React.Component {
   // handler to create a book in the books database from user input
   // then update state with the updated books array
   postBook = async (book) => {
-    try{
-      let url =  `${SERVER}/books`;
+    try {
+      let url = `${SERVER}/books`;
       // console.log('postBook url: ', url);
 
-      let createdBook = await axios.post(url,book);
+      let createdBook = await axios.post(url, book);
       console.log('Posted Book: ', createdBook.data);
 
       // use spread operator to make a deep copy of books in state, and concatenate the createdBook to the end
       this.setState({
         books: [...this.state.books, createdBook.data],
       });
-    } catch (e){
-      console.log('This is a problem... ',e.response)
+    } catch (e) {
+      console.log('This is a problem... ', e.response)
     }
   }
 
   // method to delete a book from the database using its '_id' property
   deleteBook = async (id) => {
-    try
-    {
+    try {
       let url = `${SERVER}/books/${id}`;
       await axios.delete(url);
       console.log(url);
       // use `filter` to make an `updatedBooks` array sans the book we just deleted
-      let updatedBooks = this.state.books.filter( book => book._id !== id);
+      let updatedBooks = this.state.books.filter(book => book._id !== id);
       console.log(updatedBooks);
       // set the updatedBooks array to state
       this.setState({
         books: updatedBooks,
       });
     }
-    catch(e)
-    {
+    catch (e) {
       console.log('could not delete this book: ', e.response.data);
     }
   }
@@ -123,13 +139,13 @@ class BestBooks extends React.Component {
       }
     }
 
-    handleUpdateSubmit = e =>
+    handleUpdate = e =>
     {
       e.preventDefault();
 
       let bookToUpdate = 
       {
-        title: e.target.title.value || this.props.book.title,
+        title: e.target.title.value || this.props.boo k.title,
         description: e.target.description.value || this.props.book.description,
         status: e.target.status.value || this.props.book.status,
 
@@ -145,8 +161,62 @@ class BestBooks extends React.Component {
     }
 
     // call `updateBook()` to do backend stuff
-  */
+*/
 
+updateBook = async updatedBook =>
+    {
+      try
+      {
+        // make url using the `_id` property of the `updatedBook` argument
+        let url = `${SERVER}/books/${updatedBook._id}`;
+
+        // get the updatedBook from the database
+        let updatedBookFromDB = await axios.put(url, updatedBook);
+
+        // update state, so that it can rerender with updated books info
+
+        let updatedBookArray = this.state.books.map( existingBook => 
+        {
+          // if the `._id` matches the book we want to update:
+          // replace that element with the updatedBookFromDB book object
+
+          return existingBook._id === updatedBook._id
+          ? updatedBookFromDB.data
+          : existingBook;
+        });
+
+        this.setState({
+          books: updatedBookArray,
+          showUpdateModal: false
+        })
+      }
+      catch(e)
+      {
+        console.log('Problem updating book...: ', e.message);
+      }
+    }
+    handleUpdate = e =>
+    {
+      e.preventDefault();
+
+      let bookToUpdate = 
+      {
+        title: e.target.title.value || this.state.book.title,
+        description: e.target.description.value || this.state.book.description,
+        status: e.target.status.value || this.state.book.status,
+
+        // pass in _id and __v of book
+        _id: this.state.book._id,
+
+        // two underscores
+        __v: this.state.book.__v
+      }
+    
+
+      // log to see the book we are to update
+      console.log('bookToUpdate: ', bookToUpdate);
+      this.updateBook(bookToUpdate);
+    }
   // only runs these methods after the component mounts
   componentDidMount() {
     this.getBooks();
@@ -171,28 +241,40 @@ class BestBooks extends React.Component {
             <h3>{book.title}</h3>
             <p>{book.description}</p>
             <p>{book.status}</p>
-            
-             {/* delete button */}
-            <Button 
-            variant="dark" 
-            onClick={() => this.deleteBook(book._id)}
-           //</Carousel.Item> }}
-          >
-            Delete Book
-          </Button>
+
+            {/* update button */}
+            <Button
+              variant="dark"
+              onClick={() => 
+                
+                this.handleUpdateModal(book)}
+            >
+              Update Book
+            </Button>
+
+            {/* delete button */}
+            <Button
+              variant="dark"
+              onClick={() => this.deleteBook(book._id)}
+
+            >
+              Delete Book
+            </Button>
+          
           </Carousel.Caption>
 
-         
-         
+
+
         </Carousel.Item>
-    )});
+      )
+    });
 
     // log to see what's inside the booksCarouselItems array
     // console.log(booksCarouselItems);
     return (
       <>
-        <Button 
-          variant="dark" 
+        <Button
+          variant="dark"
           onClick={this.handleModal}
         >
           Add Books
@@ -203,18 +285,26 @@ class BestBooks extends React.Component {
           onHide={this.handleModal}
           handleSubmit={this.handleSubmit}
         />
+        <BookUpdateFormModal
+          show={this.state.showUpdateModal}
+          onHide={this.hideUpdateForm}
+          handleUpdate={this.handleUpdate}
+          book={this.state.book}
+
+        />
+
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
 
         {/* ternary to display either a <Carousel> (if there are books) or an error message */}
-        {this.state.books.length 
-        ? 
-        (
-          <Carousel>{booksCarouselItems}</Carousel>
-        ) 
-        :
-        (
-          <h3>No Books Found :(</h3>
-        )}
+        {this.state.books.length
+          ?
+          (
+            <Carousel>{booksCarouselItems}</Carousel>
+          )
+          :
+          (
+            <h3>No Books Found :(</h3>
+          )}
       </>
     )
   }
