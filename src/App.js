@@ -10,6 +10,13 @@ import {
   Route
 } from "react-router-dom";
 
+// withAuth0 for `class` components
+import { withAuth0 } from '@auth0/auth0-react';
+
+import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
+import ProfileAuth from '.Profile.';
+
 
 class App extends React.Component {
  
@@ -40,4 +47,5 @@ class App extends React.Component {
   }
 }
 
-export default App;
+// export the withauth0 and pass in the App class
+export default withAuth0(App);
